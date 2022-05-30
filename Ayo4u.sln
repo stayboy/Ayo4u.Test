@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32519.111
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ayo4u.Client", "Ayo4u\Client\Ayo4u.Client.csproj", "{A734C3DA-107D-4387-8ED5-EF27EB490C79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ayo4u.Shared", "Ayo4u\Shared\Ayo4u.Shared.csproj", "{7D46E8AA-C460-4F4D-80DF-292EAC5928A0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A734C3DA-107D-4387-8ED5-EF27EB490C79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A734C3DA-107D-4387-8ED5-EF27EB490C79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A734C3DA-107D-4387-8ED5-EF27EB490C79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A734C3DA-107D-4387-8ED5-EF27EB490C79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D46E8AA-C460-4F4D-80DF-292EAC5928A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D46E8AA-C460-4F4D-80DF-292EAC5928A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D46E8AA-C460-4F4D-80DF-292EAC5928A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D46E8AA-C460-4F4D-80DF-292EAC5928A0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EAFBAD3D-4275-4B7B-8725-9D9E81627A44}
+	EndGlobalSection
+EndGlobal
