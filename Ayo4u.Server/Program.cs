@@ -1,6 +1,13 @@
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+builder.Services.AddApiFramework(app.Configuration);
+
+app.UseSharedInfrastructure();
+
+app.MapUsersApi();
+app.MapConversionsApi();
+
+// app.MapGet("/", () => "Hello World!");
 
 app.Run();

@@ -1,13 +1,12 @@
-﻿using Ayo4u.Server.Shared.Models;
-namespace Ayo4u.Infrastructure.Models;
+﻿namespace Ayo4u.Web.Shared.Models;
 
-public class ServiceRequestAction : BaseEntity<int>
+public class ApiRequestAction : ApiBaseEntity<int>
 {
-    public ServiceAyoUser RequestAyoUser { get; set; } = default!;
+    public ApiAyoUser RequestAyoUser { get; set; } = default!;
 
     public int? ConversionId { get; set; }
 
-    // public ServiceUnitConverter? Conversion { get; set; }
+    // public ApiUnitConverter? Conversion { get; set; }
 
     public bool IsSuccess { get; set; }
 

@@ -23,7 +23,7 @@ internal class UnitConverterRepository : DBRepositoryBase<UnitConverter, AyoDbCo
         if (converter.Id > 0 && await Entity.SingleOrDefaultAsync(q => q.Id == converter.Id) is UnitConverter value)
             updated = value;
 
-        updated = converter.ToUnitConverter(converter.AyoUser.ToAyoUser(), updated);
+        updated = converter.ToUnitConverter(converter.AyoUser?.ToAyoUser(), updated);
 
         if (updated.Id == 0) Create(updated);
 
@@ -70,7 +70,15 @@ internal class UnitConverterRepository : DBRepositoryBase<UnitConverter, AyoDbCo
         return default!;
     }
 
-    public async Task<EntityResult<ServiceUnitConverter>> SetStatus(int id, BlockStatus status, DataUnitConverterUpdate converter)
+    public async Task<ServiceUnitConverter> GetAsync(string inputType, string outputType)
+    {
+        if (await FindByCondition(q => q.InUnitType == inputType && q.OutUnitType == outputType && q.IsDeleted == false).Include(q => q.CreatedByUser).SingleOrDefaultAsync() is UnitConverter result)
+            return result.ToServiceUnitConverter();
+
+        return default!;
+    }
+
+    public async Task<EntityResult<ServiceUnitConverter>> SetStatus(int id, BlockStatus status, DataUnitConverterUpdate? converter = null)
     {
         if (await FindByCondition(q => q.Id == id).Include(q => q.CreatedByUser).SingleOrDefaultAsync() is UnitConverter result)
         {

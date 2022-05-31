@@ -23,7 +23,7 @@ internal class RequestActionRepository : DBRepositoryBase<RequestAction, AyoDbCo
             .Include(q => q.Conversion).SingleOrDefaultAsync(q => q.Id == request.Id) is RequestAction value)
             updated = value;
 
-        updated = request.ToRequestAction(request.AyoUser.ToAyoUser(), updated);
+        updated = request.ToRequestAction(request.AyoUser?.ToAyoUser(), updated);
 
         if (updated.Id == 0) Create(updated);
 

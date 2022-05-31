@@ -16,8 +16,8 @@ internal static class RequestActionExtensions
 
             ConversionId = value.ConversionId,
 
-            InUnitType = value.Conversion?.InUnitType,
-            OutUnitType = value.Conversion?.OutUnitType,
+            InUnitType = value.InputType,
+            OutUnitType = value.OutputType,
 
             IsSuccess = value.IsSuccess,
 
@@ -27,15 +27,10 @@ internal static class RequestActionExtensions
             Remarks = value.LogMessage                
         };
 
-        if (value.Conversion != null)
-        {
-            result.Conversion = value.Conversion.ToServiceUnitConverter();
-        }
-
         return value.ToBaseEntity(result);
     }
 
-    public static RequestAction ToRequestAction(this DataRequestActionUpdate value, AyoUser user, RequestAction? updateModel = null)
+    public static RequestAction ToRequestAction(this DataRequestActionUpdate value, AyoUser? user = null, RequestAction? updateModel = null)
     {
         updateModel ??= new()
         {
@@ -54,6 +49,9 @@ internal static class RequestActionExtensions
 
         updateModel.InputValue = value.InputValue;
         updateModel.OutputValue = value.OutputValue;
+
+        updateModel.InputType = value.InputType;
+        updateModel.OutputType = value.OutputType;
 
         updateModel.IsSuccess = value.IsSuccess;
         updateModel.LogMessage = value.Remarks;

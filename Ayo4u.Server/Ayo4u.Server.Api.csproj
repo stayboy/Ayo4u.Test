@@ -12,4 +12,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Ayo4u.Data\Ayo4u.Data.csproj" />
+    <ProjectReference Include="..\Ayo4u.Infrastructure\Ayo4u.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ayo4u\Shared\Ayo4u.Web.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

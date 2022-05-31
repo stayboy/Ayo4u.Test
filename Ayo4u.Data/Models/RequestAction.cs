@@ -2,9 +2,13 @@
 
 internal class RequestAction : IdModel<int, RequestAction>
 {
-    public Guid RequestAyoUserId { get; set; }
+    public Guid? RequestAyoUserId { get; set; }
 
-    public int ConversionId { get; set; }
+    public int? ConversionId { get; set; }
+
+    public string InputType { get; set; } = default!;
+
+    public string OutputType { get; set; } = default!;
 
     public float InputValue { get; set; }
 

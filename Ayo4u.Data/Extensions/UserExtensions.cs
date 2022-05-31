@@ -40,7 +40,7 @@ namespace Ayo4u.Data.Extensions
         public static IEnumerable<ServiceAyoUser> ToServiceAyoUsers(this IEnumerable<AyoUser> users) =>
            users.Select(x => x.ToServiceAyoUser());
 
-        public static AyoUser ToAyoUserUpdate(this DataAyoUserUpdate value, AyoUser user, AyoUser? updateModel = null)
+        public static AyoUser ToAyoUserUpdate(this DataAyoUserUpdate value, AyoUser? user, AyoUser? updateModel = null)
         {
             updateModel ??= new()
             {

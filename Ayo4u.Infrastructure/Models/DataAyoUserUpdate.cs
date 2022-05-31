@@ -2,7 +2,7 @@
 
 public record DataAyoUserUpdate (Guid Id, DateTime CreatedAt)
 {
-    public ServiceAyoUser AyoUser { get; set; } = default!;
+    public ServiceAyoUser? AyoUser { get; set; }
 
     public string Email { get; set; } = default!;
 

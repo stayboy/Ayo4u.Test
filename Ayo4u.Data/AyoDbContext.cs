@@ -27,7 +27,7 @@ namespace Ayo4u.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);            
         }
     }
 }

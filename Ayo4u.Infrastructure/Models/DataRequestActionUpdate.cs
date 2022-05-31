@@ -2,11 +2,15 @@
 
 public record DataRequestActionUpdate (int Id, DateTime CreatedAt, bool IsSuccess = true)
 {
-    public ServiceAyoUser AyoUser { get; set; } = default!;
+    public ServiceAyoUser? AyoUser { get; set; }
 
-    public Guid RequestAyoUserId { get; set; }
+    public Guid? RequestAyoUserId { get; set; }
 
-    public int ConversionId { get; set; }
+    public int? ConversionId { get; set; }
+
+    public string InputType { get; set; } = default!;
+
+    public string OutputType { get; set; } = default!;
 
     public float InputValue { get; set; }
 
