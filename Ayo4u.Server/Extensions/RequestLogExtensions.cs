@@ -22,7 +22,8 @@ namespace Ayo4u.Server.Api.Extensions
             };
         }
 
-        public static async Task<ApiRequestChange> ToApiRequestChange(this ApiConversionInput input, DateTime now, Func<string, string, Task<ApiUnitConverter>> handler)
+        public static async Task<ApiRequestChange> ToApiRequestChange(this ApiConversionInput input, DateTime now, 
+            Func<string, string, Task<ApiUnitConverter>> handler)
         {
             var convert = await handler.Invoke(input.InputType, input.OutputType);
 
@@ -32,7 +33,20 @@ namespace Ayo4u.Server.Api.Extensions
             if (convert != null)
             {
                 issuccess = true;
-                outValue = convert.Multiplier * input.InValue;
+
+                if (convert.Formula?.Id > 0)
+                {
+                    outValue = ApiValueTypeRecord<Formulae>.GetEnumApiValueTypeRecordFromInt(convert.Formula.Id)?.Id switch
+                    {
+                        Formulae.Fahrenheit_To_Celcius => input.InValue.ToCelcius(),
+                        Formulae.Celcius_To_Fahrenheit => input.InValue.ToFahrenheit(),
+                        _ => throw new ArgumentException("Invalid Formula")
+                    };
+                }
+                else
+                {
+                    outValue = convert.Multiplier * input.InValue;
+                }
             }
 
             return new(0, now)

@@ -5,16 +5,21 @@ internal static class ConversionApi
     public static IEndpointRouteBuilder MapConversionsApi(this IEndpointRouteBuilder routes)
     {
         routes.MapGet("/conversions/{id}", GetConversionById);
+
         routes.MapPost("/conversions/search", FindConversions);
 
         routes.MapPut("/conversions/{id}", UpdateConversion);
+
         routes.MapPost("/conversions", AddUpdateConversion);
 
         routes.MapDelete("/conversions/{id}", DeleteConversion);
+
         routes.MapPost("/conversions/{id:guid}/block", BlockConversion);
+
         routes.MapPost("/conversions/{id}/activate", UnBlockConversion);
 
         routes.MapGet("/conversions/{input}-{output}/convert/{value}", ConvertValue);
+
         routes.MapGet("/conversions/{id}/convert/{value}", ConvertValueById);
 
         return routes;

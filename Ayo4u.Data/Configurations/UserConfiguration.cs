@@ -1,9 +1,5 @@
 ﻿using Ayo4u.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Ayo4u.Data.Configurations
 {
@@ -11,6 +7,13 @@ namespace Ayo4u.Data.Configurations
     {
         public UserConfiguration() : base("AyoUsers")
         {
+        }
+
+        public override void Configure(EntityTypeBuilder<AyoUser> builder)
+        {
+            base.Configure(builder);
+
+            builder.HasData(new AyoUser[] { new() { Email = "skwart@outlook.com", FirstName = "Solomon", LastName = "Owoo" } });
         }
     }
 }

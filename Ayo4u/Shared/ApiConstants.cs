@@ -4,17 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ayo4u.Server.Shared.Constants;
+namespace Ayo4u.Web.Shared.Constants;
 
-public enum BlockStatus : short
-{
-    Blocked = 1,
-    Deleted = 3,
-    Clone = 5,
-    Activate = 7
-}
 
-public enum Formulae
+public enum ApiFormulae
 {
     Celcius_To_Fahrenheit = 1,
     Fahrenheit_To_Celcius = 3

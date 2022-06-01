@@ -14,7 +14,8 @@ namespace Ayo4u.Data.Extensions
             {
                  InUnitType = value.InUnitType,
                  OutUnitType = value.OutUnitType,
-                 Multiplier = value.Multiplier
+                 Multiplier = value.Multiplier,
+                 Formula = value.Formula
             };
 
             if (value.RequestLogs != null)
@@ -42,6 +43,7 @@ namespace Ayo4u.Data.Extensions
             updateModel.InUnitType = value.InUnitType;
             updateModel.OutUnitType = value.OutUnitType;
             updateModel.Multiplier = value.Multiplier;
+            updateModel.Formula = value.Formula;
 
             return updateModel;
         }

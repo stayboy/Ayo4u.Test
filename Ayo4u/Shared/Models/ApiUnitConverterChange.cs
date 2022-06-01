@@ -11,4 +11,6 @@ public record ApiUnitConverterChange : ApiChange<int>
     public string OutUnitType { get; set; } = default!;
 
     public float Multiplier { get; set; }
+
+    public int? Formula { get; set; }
 }

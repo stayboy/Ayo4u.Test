@@ -5,14 +5,19 @@ internal static class UsersApi
     public static IEndpointRouteBuilder MapUsersApi(this IEndpointRouteBuilder routes)
     {
         routes.MapGet("/users/{id:guid}", GetUserById);
+
         routes.MapGet("/users/{email}", GetUserByEmail);
+
         routes.MapPost("/users/search", FindUsers);
 
         routes.MapPut("/users/{id:guid}", UpdateUser);
+
         routes.MapPost("/users", AddUpdateUser);
 
         routes.MapDelete("/users/{id:guid}", DeleteUser);
+
         routes.MapPost("/user/{id:guid}/block", BlockUser);
+
         routes.MapPost("/user/{id:guid}/activate", UnBlockUser);
 
         return routes;

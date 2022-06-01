@@ -8,6 +8,4 @@ app.UseSharedInfrastructure();
 app.MapUsersApi();
 app.MapConversionsApi();
 
-// app.MapGet("/", () => "Hello World!");
-
 app.Run();

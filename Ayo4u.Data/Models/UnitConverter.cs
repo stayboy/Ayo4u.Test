@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ayo4u.Server.Shared.Constants;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,8 @@ internal class UnitConverter : IdModel<int, UnitConverter>
     public string OutUnitType { get; set; } = default!;
 
     public float Multiplier { get; set; }
+
+    public Formulae? Formula { get; set; }
 
     public virtual IReadOnlyCollection<RequestAction> RequestLogs { get; set; } = new HashSet<RequestAction>();
 }

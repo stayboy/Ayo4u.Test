@@ -1,4 +1,5 @@
-﻿using Ayo4u.Server.Shared.Models;
+﻿using Ayo4u.Server.Shared.Constants;
+using Ayo4u.Server.Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace Ayo4u.Infrastructure.Models
         public string OutUnitType { get; set; } = default!;
 
         public float Multiplier { get; set; }
+
+        public Formulae? Formula { get; set; }
 
         public IEnumerable<ServiceRequestAction>? RequestLogs { get; set; }
     }

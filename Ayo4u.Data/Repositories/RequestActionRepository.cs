@@ -3,6 +3,7 @@ using Ayo4u.Data.Models;
 using Ayo4u.Infrastructure.Models;
 using Ayo4u.Infrastructure.Queries;
 using Ayo4u.Infrastructure.Repositories;
+using Ayo4u.Server.Shared.Constants;
 using Ayo4u.Server.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -62,5 +63,36 @@ internal class RequestActionRepository : DBRepositoryBase<RequestAction, AyoDbCo
         if (results == null) return Enumerable.Empty<ServiceRequestAction>();
 
         return results.ToServiceRequestActions();
+    }
+
+    public async Task<EnumerableEntityResult<ServiceRequestAction>> DeleteLogs(int[] ids, BlockStatus status)
+    {
+        if (new[] {BlockStatus.Activate, BlockStatus.Clone}.Any(q => q == status))
+        {
+            throw new InvalidOperationException("Method not Allowed");
+        }
+
+        if (ids.Any() && await FindByCondition(q => ids.Contains(q.Id), trackChanges: true).ToArrayAsync() is RequestAction[] logs && logs.Any())
+        {
+            if (status ==  BlockStatus.Deleted)
+            {
+                dbcontext.RemoveRange(logs);
+            } else
+            {
+                foreach (var item in logs) item.IsDeleted = true;
+            }
+
+            await SaveChangesAsync();
+
+            return EnumerableEntityResult<ServiceRequestAction>.Success(logs.ToServiceRequestActions());
+        }
+
+        throw new ArgumentNullException("Ids Provided cannot be null");
+    }
+
+    public async Task<ServiceRequestAction?> GetAsync(int id)
+    {
+        return await FindByCondition(q => q.Id == id).Include(q => q.CreatedByUser).Include(q => q.RequestAyoUser).SingleOrDefaultAsync() is
+            RequestAction log ? log.ToServiceRequestAction() : default;
     }
 }
