@@ -19,3 +19,9 @@ public enum Formulae
     Celcius_To_Fahrenheit = 1,
     Fahrenheit_To_Celcius = 3
 }
+
+public static class CodeTypes
+{
+    public const string CLUB_TEAMS = "teams";
+    public const string INJURIES = "body_injuries";
+}
