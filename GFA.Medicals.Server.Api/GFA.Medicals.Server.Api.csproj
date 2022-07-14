@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b08c34fb-3e4b-474e-894c-e391728f87c6</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.16.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GFA.Medicals.Infrastructure\GFA.Medicals.Infrastructure.csproj" />
+    <ProjectReference Include="..\GFA.Medicals.Shared\GFA.Medicals.Web.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

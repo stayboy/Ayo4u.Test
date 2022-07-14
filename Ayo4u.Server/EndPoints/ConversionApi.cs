@@ -1,31 +1,34 @@
-﻿namespace Ayo4u.Server.EndPoints;
+﻿using Ayo4u.Infrastructure.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace Ayo4u.Server.EndPoints;
 
 internal static class ConversionApi
 {
-    public static IEndpointRouteBuilder MapConversionsApi(this IEndpointRouteBuilder routes)
+    public static GroupRouteBuilder MapConversionsApi(this GroupRouteBuilder group)
     {
-        routes.MapGet("/conversions/{id}", GetConversionById);
+        group.MapGet("/{id}", GetConversionById);
 
-        routes.MapPost("/conversions/search", FindConversions);
+        group.MapPost("/search", FindConversions);
 
-        routes.MapPut("/conversions/{id}", UpdateConversion);
+        group.MapPut("/{id}", UpdateConversion);
 
-        routes.MapPost("/conversions", AddUpdateConversion);
+        group.MapPost("/", AddUpdateConversion);
 
-        routes.MapDelete("/conversions/{id}", DeleteConversion);
+        group.MapDelete("/{id}", DeleteConversion);
 
-        routes.MapPost("/conversions/{id:guid}/block", BlockConversion);
+        group.MapPost("/{id:guid}/block", BlockConversion);
 
-        routes.MapPost("/conversions/{id}/activate", UnBlockConversion);
+        group.MapPost("/{id}/activate", UnBlockConversion);
 
-        routes.MapGet("/conversions/{input}-{output}/convert/{value}", ConvertValue);
+        group.MapGet("/{input}-{output}/convert/{value}", ConvertValue);
 
-        routes.MapGet("/conversions/{id}/convert/{value}", ConvertValueById);
+        group.MapGet("/{id}/convert/{value}", ConvertValueById);
 
-        return routes;
+        return group;
     }
 
-    public async static Task<IResult> ConvertValue(string input, string output, float value, IClock clock, IConverterRepository converterRepository,
+    static async Task<Results<Ok<ServiceRequestAction>, BadRequest>> ConvertValue(string input, string output, float value, IClock clock, IConverterRepository converterRepository,
         IRequestActionRepository requestRepository)
     {
         var request = new ApiConversionInput(value, input, output);
@@ -41,11 +44,11 @@ internal static class ConversionApi
 
             if (rs.IsSuccessful && rs.Result != null)
             {
-                return Results.Ok(rs.Result);
+                return TypedResults.Ok(rs.Result);
             }
         }
 
-        return Results.BadRequest();
+        return TypedResults.BadRequest();
     }
 
     public static async Task<IResult> ConvertValueById(int id, float value, IClock clock, IConverterRepository converterRepository,
@@ -86,7 +89,7 @@ internal static class ConversionApi
 
         if (rs != null)
         {
-            return Results.CreatedAtRoute($"/conversions/{rs.Id}");
+            return Results.CreatedAtRoute($"/{rs.Id}");
         }
 
         return Results.BadRequest();

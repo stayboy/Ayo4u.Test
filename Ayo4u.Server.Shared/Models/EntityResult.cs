@@ -1,4 +1,4 @@
-﻿namespace Ayo4u.Server.Shared.Models;
+﻿namespace Server.Shared.Models;
 
 public abstract class EntityResult
 {

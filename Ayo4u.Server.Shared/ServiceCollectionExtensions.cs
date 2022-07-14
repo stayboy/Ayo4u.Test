@@ -1,12 +1,12 @@
-﻿using Ayo4u.Server.Shared.Database;
-using Ayo4u.Server.Shared.Services;
+﻿using Server.Shared.Database;
+using Server.Shared.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace Ayo4u.Server.Shared;
+namespace Server.Shared;
 
 public static class ServiceCollectionExtensions
 {

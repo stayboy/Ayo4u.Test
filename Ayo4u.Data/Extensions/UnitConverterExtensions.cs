@@ -1,7 +1,4 @@
-﻿using Ayo4u.Data.Models;
-using Ayo4u.Infrastructure.Models;
-
-namespace Ayo4u.Data.Extensions
+﻿namespace Ayo4u.Data.Extensions
 {
     internal static class UnitConverterExtensions
     {

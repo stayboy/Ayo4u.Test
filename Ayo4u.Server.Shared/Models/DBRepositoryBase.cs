@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Ayo4u.Server.Shared.Models;
+namespace Server.Shared.Models;
 
 public abstract class DBRepositoryBase<T, TContext> where T : class where TContext : DbContext
 {

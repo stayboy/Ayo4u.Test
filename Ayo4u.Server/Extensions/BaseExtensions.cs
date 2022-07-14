@@ -1,6 +1,4 @@
-﻿using Ayo4u.Server.Shared.Models;
-
-namespace Ayo4u.Server.Api.Extensions;
+﻿namespace Ayo4u.Server.Api.Extensions;
 
 internal static class BaseExtensions
 {

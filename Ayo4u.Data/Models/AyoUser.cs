@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Ayo4u.Data.Models;
 
-namespace Ayo4u.Data.Models
+internal class AyoUser : AyoIdModel<Guid, AyoUser>, IUserProfile<Guid>
 {
-    internal class AyoUser : IdModel<Guid, AyoUser>
-    {
-        public string Email { get; set; } = default!;
+    public string Email { get; set; } = default!;
 
-        public string FirstName { get; set; } = default!;
+    public string FirstName { get; set; } = default!;
 
-        public string LastName { get; set; } = default!;
-    }
+    public string LastName { get; set; } = default!;
 }

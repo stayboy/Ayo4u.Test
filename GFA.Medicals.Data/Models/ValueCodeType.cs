@@ -1,6 +1,6 @@
-﻿namespace Ayo4u.Data.Models;
+﻿namespace GFA.Medicals.Data.Models;
 
-internal class ValueCodeType : IdModel<int, ValueCodeType>
+internal class ValueCodeType : GFAIdModel<int, ValueCodeType>
 {
     public string CodeType { get; set; } = default!;
 

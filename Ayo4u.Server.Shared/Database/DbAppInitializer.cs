@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Ayo4u.Server.Shared.Database;
+namespace Server.Shared.Database;
 
 internal sealed class DbAppInitializer : IHostedService
 {

@@ -1,6 +1,4 @@
-﻿using Ayo4u.Server.Shared.Constants;
-
-namespace Ayo4u.Infrastructure.Models;
+﻿namespace Ayo4u.Infrastructure.Models;
 
 public record DataUnitConverterUpdate (int Id, DateTime CreatedAt)
 {

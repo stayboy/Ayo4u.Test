@@ -1,6 +1,6 @@
 ﻿namespace Ayo4u.Data.Models;
 
-internal class RequestAction : IdModel<int, RequestAction>
+internal class RequestAction : AyoIdModel<int, RequestAction>
 {
     public Guid? RequestAyoUserId { get; set; }
 

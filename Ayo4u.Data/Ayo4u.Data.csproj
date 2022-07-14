@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ayo4u.Infrastructure\Ayo4u.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ayo4u.Server.Shared\Server.Shared.csproj" />
   </ItemGroup>
 
 </Project>

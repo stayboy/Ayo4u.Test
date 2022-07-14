@@ -1,9 +1,8 @@
-﻿using Ayo4u.Data.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Ayo4u.Data.Configurations
 {
-    internal class RequestActionConfiguration : IdModelConfiguration<int, RequestAction>
+    internal class RequestActionConfiguration : AyoIdModelConfiguration<int, RequestAction>
     {
         public RequestActionConfiguration() : base("RequestLogs")
         {

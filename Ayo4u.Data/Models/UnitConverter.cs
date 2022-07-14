@@ -1,13 +1,6 @@
-﻿using Ayo4u.Server.Shared.Constants;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Ayo4u.Data.Models;
 
-namespace Ayo4u.Data.Models;
-
-internal class UnitConverter : IdModel<int, UnitConverter>
+internal class UnitConverter : AyoIdModel<int, UnitConverter>
 {
     public string InUnitType { get; set; } = default!;
 

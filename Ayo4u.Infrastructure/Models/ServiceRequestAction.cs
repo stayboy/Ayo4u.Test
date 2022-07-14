@@ -1,5 +1,4 @@
-﻿using Ayo4u.Server.Shared.Models;
-namespace Ayo4u.Infrastructure.Models;
+﻿namespace Ayo4u.Infrastructure.Models;
 
 public class ServiceRequestAction : BaseEntity<int>
 {

@@ -1,11 +1,6 @@
 ﻿using Ayo4u.Data.Extensions;
-using Ayo4u.Data.Models;
-using Ayo4u.Infrastructure.Models;
 using Ayo4u.Infrastructure.Queries;
 using Ayo4u.Infrastructure.Repositories;
-using Ayo4u.Server.Shared.Constants;
-using Ayo4u.Server.Shared.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ayo4u.Data.Repositories
 {
@@ -23,7 +18,7 @@ namespace Ayo4u.Data.Repositories
             if (user.Id != Guid.Empty && await Entity.SingleOrDefaultAsync(q => q.Id == user.Id) is AyoUser value)
                 updated = value;
 
-            updated = user.ToAyoUserUpdate(user.AyoUser?.ToAyoUser(), updated);
+            updated = user.ToUserUpdate(user.AyoUser?.ToAyoUser(), updated);
 
             if (user.Id == Guid.Empty) Create(updated);
 

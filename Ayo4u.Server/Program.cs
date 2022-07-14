@@ -6,6 +6,6 @@ builder.Services.AddApiFramework(app.Configuration);
 app.UseSharedInfrastructure();
 
 app.MapUsersApi();
-app.MapConversionsApi();
+app.MapGroup("/conversions").MapConversionsApi().RequireAuthorization();
 
 app.Run();

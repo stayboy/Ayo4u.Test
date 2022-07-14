@@ -1,9 +1,4 @@
-﻿using Ayo4u.Infrastructure.Models;
-using Ayo4u.Infrastructure.Queries;
-using Ayo4u.Server.Shared.Constants;
-using Ayo4u.Server.Shared.Models;
-
-namespace Ayo4u.Infrastructure.Repositories;
+﻿namespace Ayo4u.Infrastructure.Repositories;
 
 public interface IConverterRepository
 {

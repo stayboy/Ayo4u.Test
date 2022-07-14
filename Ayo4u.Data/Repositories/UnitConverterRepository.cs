@@ -1,10 +1,6 @@
 ﻿using Ayo4u.Data.Extensions;
-using Ayo4u.Data.Models;
-using Ayo4u.Infrastructure.Models;
 using Ayo4u.Infrastructure.Queries;
 using Ayo4u.Infrastructure.Repositories;
-using Ayo4u.Server.Shared.Constants;
-using Ayo4u.Server.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ayo4u.Data.Repositories;

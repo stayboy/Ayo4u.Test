@@ -1,6 +1,5 @@
 ﻿using Ayo4u.Data.Repositories;
 using Ayo4u.Infrastructure.Repositories;
-using Ayo4u.Server.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

@@ -1,10 +1,8 @@
-﻿using Ayo4u.Data.Models;
-using Ayo4u.Server.Shared.Constants;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Ayo4u.Data.Configurations
 {
-    internal class UnitConverterConfiguration : IdModelConfiguration<int, UnitConverter>
+    internal class UnitConverterConfiguration : AyoIdModelConfiguration<int, UnitConverter>
     {
         public UnitConverterConfiguration() : base("Converters")
         {
