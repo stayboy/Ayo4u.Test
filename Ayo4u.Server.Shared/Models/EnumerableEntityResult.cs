@@ -1,6 +1,6 @@
 ﻿namespace Server.Shared.Models;
 
-public class EnumerableEntityResult<T> : EntityResult where T : class
+public class EnumerableEntityResult<T> : EntityResult
 {
     public EnumerableEntityResult(IEnumerable<T>? results, bool isPassed, IEnumerable<string>? errors = null) : base(isPassed, errors)
     {
@@ -9,7 +9,5 @@ public class EnumerableEntityResult<T> : EntityResult where T : class
 
     public IEnumerable<T>? Results { get; }
 
-    public static EnumerableEntityResult<T> Success(IEnumerable<T> dto) => new(dto, true);
-
-    public static EnumerableEntityResult<T> Failure(IEnumerable<string> errors) => new(null, false, errors);
+    public static EnumerableEntityResult<T> Failure(IEnumerable<string> errors) => new(default, false, errors);
 }

@@ -1,10 +1,56 @@
-﻿using GFA.Medicals.Data.Models;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace GFA.Medicals.Data.Extensions;
 
 internal static class BaseExtensions
 {
+    public static IQueryable<T> ApplySortingFields<T>(this IQueryable<T> query, SortField[] sortFields)
+    {
+        IOrderedQueryable<T> ordered;
+
+        var field_1 = sortFields.ElementAt(0);
+        var pInfo = typeof(T).GetProperty(field_1.Name, BindingFlags.Public | BindingFlags.Static);
+
+        if (pInfo != null)
+        {
+            ordered = field_1.IsAscending switch
+            {
+                false => query.OrderByDescending(GetSortExpression<T>(pInfo)),
+                _ => query.OrderBy(GetSortExpression<T>(pInfo))
+            };
+
+            if (sortFields.Skip(1) is var sfields && sfields?.Any() == true)
+            {
+                foreach (var field in sfields)
+                {
+                    var propInfo = typeof(T).GetProperty(field.Name, BindingFlags.Public | BindingFlags.Static);
+
+                    if (propInfo != null)
+                    {
+                        query = field.IsAscending switch
+                        {
+                            false => ordered.ThenByDescending(GetSortExpression<T>(propInfo)),
+                            _ => ordered.ThenBy(GetSortExpression<T>(propInfo))
+                        };
+                    }
+                }
+            }
+            return ordered;
+        }
+
+        return query;
+    }
+
+    private static Expression<Func<T, object>> GetSortExpression<T>(PropertyInfo mProp)
+    {
+        var prm = Expression.Parameter(typeof(T), "x");
+
+        var property = Expression.PropertyOrField(prm, mProp.Name);
+
+        return Expression.Lambda<Func<T, object>>(Expression.Convert(property, typeof(object)), prm);
+    }
+
     internal static T? CloneBase<T, B>(T obj, Guid userId, Func<T, T> updateHandler, B initValue) where T: GFAIdModel<B, T> where B: struct
     {
         var nw = obj.Clone();

@@ -16,7 +16,7 @@ namespace GFA.Medicals.Infrastructure.Queries
 
         public int Top { get; set; } = 20;
 
-        public string? SortField { get; set; }
+        public SortField[] SortFields { get; set; }
 
         public int? PageIndex { get; set; }
 

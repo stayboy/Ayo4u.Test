@@ -11,8 +11,6 @@ internal class UserRepository : DBRepositoryBase<GFAUser, GFADbContext>, IUserRe
 
     public async Task<EntityResult<ServiceGFAUser>> AddUpdateEntity(DataGFAUserUpdate entity)
     {
-        ArgumentNullException.ThrowIfNull(entity, nameof(DataGFAUserUpdate));
-
         try
         {
             GFAUser? updated = null;
@@ -26,13 +24,13 @@ internal class UserRepository : DBRepositoryBase<GFAUser, GFADbContext>, IUserRe
 
             await SaveChangesAsync();
 
-            return EntityResult<ServiceGFAUser>.Success(updated.ToServiceGFAUser());
+            return EntityResult.Success(updated.ToServiceGFAUser());
         }
         catch (Exception ex)
         {
             logger.LogError(ex.Message, nameof(AddUpdateEntity), nameof(UserRepository));
 
-            return EntityResult<ServiceGFAUser>.Failure(new[] { ex.Message });
+            return EntityResult.Failure<ServiceGFAUser>(new[] { ex.Message });
         }
     }
 
@@ -44,17 +42,20 @@ internal class UserRepository : DBRepositoryBase<GFAUser, GFADbContext>, IUserRe
         {
             query = FindByCondition(q => parameters.Ids.Contains(q.Id)).Include(q => q.CreatedByUser);
         }
-        else
-        {
-            query = FindByCondition(q =>
-                (string.IsNullOrWhiteSpace(parameters.SearchText) || string.IsNullOrWhiteSpace(q.Keywords) || EF.Functions.FreeText(q.Keywords, parameters.ToFreeText()!)) &&
-                (string.IsNullOrWhiteSpace(parameters.LastName) && q.LastName == parameters.LastName) &&
-                (string.IsNullOrWhiteSpace(parameters.Email) || q.Email == parameters.Email) &&
-                q.IsDeleted == parameters.IsDeleted, Top: parameters.Top
-            ).Include(q => q.CreatedByUser);
-        }
+
+        query ??= FindByCondition(q =>
+            (string.IsNullOrWhiteSpace(parameters.SearchText) || string.IsNullOrWhiteSpace(q.Keywords) || EF.Functions.FreeText(q.Keywords, parameters.ToFreeText()!)) &&
+            (string.IsNullOrWhiteSpace(parameters.LastName) && q.LastName == parameters.LastName) &&
+            (string.IsNullOrWhiteSpace(parameters.Email) || q.Email == parameters.Email) &&
+            q.IsDeleted == parameters.IsDeleted, Top: parameters.Top
+        ).Include(q => q.CreatedByUser);
 
         if (query == null) return Enumerable.Empty<ServiceGFAUser>();
+
+        if (parameters.SortFields?.Any() == true)
+        {
+            query = query.ApplySortingFields(parameters.SortFields);
+        }
 
         return (await query.ToArrayAsync()).ToServiceGFAUsers();
     }
@@ -76,12 +77,12 @@ internal class UserRepository : DBRepositoryBase<GFAUser, GFADbContext>, IUserRe
 
                     await SaveChangesAsync();
 
-                    return EntityResult<ServiceGFAUser>.Success(user.ToServiceGFAUser());
+                    return EntityResult.Success(user.ToServiceGFAUser());
                 }
 
                 logger.LogError($"Cloning model {updated} Failed", nameof(UserRepository), nameof(CloneAsync));
 
-                return EntityResult<ServiceGFAUser>.Failure(new[] { "Cloning model failed" });
+                return EntityResult.Failure<ServiceGFAUser>(new[] { "Cloning model failed" });
             }
 
             throw new ArgumentNullException("Code does not exist");
@@ -90,7 +91,7 @@ internal class UserRepository : DBRepositoryBase<GFAUser, GFADbContext>, IUserRe
         {
             logger.LogError(ex.Message, nameof(UserRepository), nameof(CloneAsync));
 
-            return EntityResult<ServiceGFAUser>.Failure(new[] { ex.Message });
+            return EntityResult.Failure<ServiceGFAUser>(new[] { ex.Message });
         }
     }
 
@@ -136,7 +137,7 @@ internal class UserRepository : DBRepositoryBase<GFAUser, GFADbContext>, IUserRe
 
                 await SaveChangesAsync();
 
-                return EnumerableEntityResult<ServiceGFAUser>.Success(users.ToServiceGFAUsers());
+                return EntityResult.Success(users.ToServiceGFAUsers());
             }
 
             throw new ArgumentNullException("Ids Provided cannot be null");

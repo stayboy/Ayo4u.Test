@@ -11,8 +11,6 @@ internal class MemberRepository : DBRepositoryBase<Member, GFADbContext>, IMembe
 
     public async Task<EntityResult<ServiceMember>> AddUpdateEntity(DataMemberUpdate entity)
     {
-        ArgumentNullException.ThrowIfNull(entity, nameof(DataMemberUpdate));
-
         try
         {
             Member? updated = null;
@@ -26,13 +24,13 @@ internal class MemberRepository : DBRepositoryBase<Member, GFADbContext>, IMembe
 
             await SaveChangesAsync();
 
-            return EntityResult<ServiceMember>.Success(updated.ToServiceMember());
+            return EntityResult.Success(updated.ToServiceMember());
         }
         catch (Exception ex)
         {
             logger.LogError(ex.Message, nameof(AddUpdateEntity), nameof(MemberRepository));
 
-            return EntityResult<ServiceMember>.Failure(new[] { ex.Message });
+            return EntityResult.Failure<ServiceMember>(new[] { ex.Message });
         }
         
     }
@@ -45,36 +43,35 @@ internal class MemberRepository : DBRepositoryBase<Member, GFADbContext>, IMembe
         {
             query = FindByCondition(q => parameters.Ids.Contains(q.Id)).Include(q => q.CreatedByUser);
         }
-        else
-        {
-            query = FindByCondition(q =>
-                (string.IsNullOrWhiteSpace(parameters.SearchText) || string.IsNullOrWhiteSpace(q.Keywords) || EF.Functions.FreeText(q.Keywords, parameters.ToFreeText()!)) &&
-                (string.IsNullOrWhiteSpace(parameters.MemberType) || q.MemberType == parameters.MemberType) &&
-                (string.IsNullOrWhiteSpace(parameters.Gender) || q.Gender == parameters.Gender) &&
-                (string.IsNullOrWhiteSpace(parameters.InjuryPeriod) || parameters.InjuryYear == null ||
-                    (parameters.InjuryYear == null && q.ClubRegisterations.Any(o => o.Medicals.Any(m => m.PeriodType == parameters.InjuryPeriod))) ||
-                    (string.IsNullOrWhiteSpace(parameters.InjuryPeriod) && q.ClubRegisterations.Any(o => o.Medicals.Any(m => m.PeriodYear == parameters.InjuryYear))) ||
-                    q.ClubRegisterations.Any(o => o.Medicals.Any(m => m.PeriodType == parameters.InjuryPeriod && m.PeriodYear == parameters.InjuryYear))
-                ) &&
-                (parameters.MinAgeYears == null || parameters.MaxAgeYears == null || (
-                    (parameters.MaxAgeYears == null && EF.Functions.DateDiffYear(q.DateOfBirth, DateTime.Today) >= parameters.MinAgeYears) ||
-                    (parameters.MinAgeYears >= EF.Functions.DateDiffYear(q.DateOfBirth, DateTime.Today) && 
-                            EF.Functions.DateDiffYear(q.DateOfBirth, DateTime.Today) < parameters.MaxAgeYears)
-                )) &&
-                (parameters.ClubId == null || 
+
+        query ??= FindByCondition(q =>
+            (string.IsNullOrWhiteSpace(parameters.SearchText) || string.IsNullOrWhiteSpace(q.Keywords) || EF.Functions.FreeText(q.Keywords, parameters.ToFreeText()!)) &&
+            (string.IsNullOrWhiteSpace(parameters.MemberType) || q.MemberType == parameters.MemberType) &&
+            (string.IsNullOrWhiteSpace(parameters.Gender) || q.Gender == parameters.Gender) &&
+            (string.IsNullOrWhiteSpace(parameters.InjuryPeriod) || parameters.InjuryYear == null ||
+                (parameters.InjuryYear == null && q.ClubRegisterations.Any(o => o.Medicals.Any(m => m.PeriodType == parameters.InjuryPeriod))) ||
+                (string.IsNullOrWhiteSpace(parameters.InjuryPeriod) && q.ClubRegisterations.Any(o => o.Medicals.Any(m => m.PeriodYear == parameters.InjuryYear))) ||
+                q.ClubRegisterations.Any(o => o.Medicals.Any(m => m.PeriodType == parameters.InjuryPeriod && m.PeriodYear == parameters.InjuryYear))
+            ) &&
+            (parameters.MinAgeYears == null || parameters.MaxAgeYears == null || (
+                (parameters.MaxAgeYears == null && EF.Functions.DateDiffYear(q.DateOfBirth, DateTime.Today) >= parameters.MinAgeYears) ||
+                (parameters.MinAgeYears >= EF.Functions.DateDiffYear(q.DateOfBirth, DateTime.Today) &&
+                        EF.Functions.DateDiffYear(q.DateOfBirth, DateTime.Today) < parameters.MaxAgeYears)
+            )) &&
+            (parameters.ClubId == null ||
+                (parameters.IsLatestClub == true && q.ClubRegisterations.Any() &&
+                (q.ClubRegisterations.OrderByDescending(q => q.DateJoined).Select(x => new { InClub = x.ClubId == parameters.ClubId }).Take(1)).Any(c => c.InClub == true))
+                || q.Clubs.Any(o => o.Id == parameters.ClubId)) &&
+            (parameters.ClubCountryId == null ||
                     (parameters.IsLatestClub == true && q.ClubRegisterations.Any() &&
-                    (q.ClubRegisterations.OrderByDescending(q => q.DateJoined).Select(x => new { InClub = x.ClubId == parameters.ClubId }).Take(1)).Any(c => c.InClub == true)) 
-                    || q.Clubs.Any(o => o.Id == parameters.ClubId)) &&                
-                (parameters.ClubCountryId == null ||
-                        (parameters.IsLatestClub == true && q.ClubRegisterations.Any() && 
-                            (q.ClubRegisterations.OrderByDescending(q => q.DateJoined)
-                            .Select(x => new { IsCountry = parameters.ClubCountryId == x.Club!.CountryId }).Take(1)).Any(c => c.IsCountry == true))
-                       || q.Clubs.Any(o => o.CountryId == parameters.ClubCountryId)) &&
-                (parameters.InjuryType == null || (q.ClubRegisterations.OrderByDescending(o => o.DateJoined)
-                    .Select(x => new { IsInjured = x.Medicals.Any(m => m.InjuryType == parameters.InjuryType && m.DateRecovered == null) }).Take(1)).Any(m => m.IsInjured == true)) &&
-                q.IsDeleted == parameters.IsDeleted, Top: parameters.Top
-            ).Include(q => q.CreatedByUser);
-        }
+                        (q.ClubRegisterations.OrderByDescending(q => q.DateJoined)
+                        .Select(x => new { IsCountry = parameters.ClubCountryId == x.Club!.CountryId }).Take(1)).Any(c => c.IsCountry == true))
+                   || q.Clubs.Any(o => o.CountryId == parameters.ClubCountryId)) &&
+            (parameters.InjuryType == null || (q.ClubRegisterations.OrderByDescending(o => o.DateJoined)
+                .Select(x => new { IsInjured = x.Medicals.Any(m => m.InjuryType == parameters.InjuryType && m.DateRecovered == null) }).Take(1)).Any(m => m.IsInjured == true)) &&
+            q.IsDeleted == parameters.IsDeleted, Top: parameters.Top
+        ).Include(q => q.CreatedByUser);
+        
 
         if (query == null) return Enumerable.Empty<ServiceMember>();
 
@@ -102,6 +99,11 @@ internal class MemberRepository : DBRepositoryBase<Member, GFADbContext>, IMembe
             ));
         }
 
+        if (parameters.SortFields?.Any() == true)
+        {
+            query = query.ApplySortingFields(parameters.SortFields);
+        }
+
         return (await query.ToArrayAsync()).ToServiceMembers();
     }
 
@@ -122,12 +124,12 @@ internal class MemberRepository : DBRepositoryBase<Member, GFADbContext>, IMembe
 
                     await SaveChangesAsync();
 
-                    return EntityResult<ServiceMember>.Success(member.ToServiceMember());
+                    return EntityResult.Success(member.ToServiceMember());
                 }
 
                 logger.LogError($"Cloning model {updated} Failed", nameof(MemberRepository), nameof(CloneAsync));
 
-                return EntityResult<ServiceMember>.Failure(new[] { "Cloning model failed" });
+                return EntityResult.Failure<ServiceMember>(new[] { "Cloning model failed" });
             }
 
             throw new ArgumentNullException("Member does not exist");
@@ -136,7 +138,7 @@ internal class MemberRepository : DBRepositoryBase<Member, GFADbContext>, IMembe
         {
             logger.LogError(ex.Message, nameof(MemberRepository), nameof(AddUpdateEntity));
 
-            return EntityResult<ServiceMember>.Failure(new[] { ex.Message });
+            return EntityResult.Failure<ServiceMember>(new[] { ex.Message });
         }
     }
 
@@ -176,7 +178,7 @@ internal class MemberRepository : DBRepositoryBase<Member, GFADbContext>, IMembe
 
                 await SaveChangesAsync();
 
-                return EnumerableEntityResult<ServiceMember>.Success(members.ToServiceMembers());
+                return EntityResult.Success(members.ToServiceMembers());
             }
 
             throw new ArgumentNullException("Ids Provided cannot be null");

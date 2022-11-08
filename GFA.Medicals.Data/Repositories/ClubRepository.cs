@@ -26,13 +26,13 @@ internal class ClubRepository : DBRepositoryBase<Club, GFADbContext>, IClubRepos
 
             await SaveChangesAsync();
 
-            return EntityResult<ServiceClub>.Success(updated.ToServiceClub());
+            return EntityResult.Success(updated.ToServiceClub());
         }
         catch (Exception ex)
         {
             logger.LogError(ex.Message, nameof(AddUpdateEntity), nameof(ClubRepository));
 
-            return EntityResult<ServiceClub>.Failure(new[] { ex.Message });
+            return EntityResult.Failure<ServiceClub>(new[] { ex.Message });
         }
     }
 
@@ -44,17 +44,20 @@ internal class ClubRepository : DBRepositoryBase<Club, GFADbContext>, IClubRepos
         {
             query = FindByCondition(q => parameters.Ids.Contains(q.Id)).Include(q => q.CreatedByUser);
         }
-        else
-        {
-            query = FindByCondition(q =>
-                (string.IsNullOrWhiteSpace(parameters.SearchText) || string.IsNullOrWhiteSpace(q.Keywords) || EF.Functions.FreeText(q.Keywords, parameters.ToFreeText()!)) &&
-                (parameters.CountryId == null || q.CountryId == parameters.CountryId) &&
-                (string.IsNullOrWhiteSpace(parameters.Division) || q.Division == parameters.Division) &&
-                q.IsDeleted == parameters.IsDeleted, Top: parameters.Top
-            ).Include(q => q.CreatedByUser);
-        }
+
+        query ??= FindByCondition(q =>
+            (string.IsNullOrWhiteSpace(parameters.SearchText) || string.IsNullOrWhiteSpace(q.Keywords) || EF.Functions.FreeText(q.Keywords, parameters.ToFreeText()!)) &&
+            (parameters.CountryId == null || q.CountryId == parameters.CountryId) &&
+            (string.IsNullOrWhiteSpace(parameters.Division) || q.Division == parameters.Division) &&
+            q.IsDeleted == parameters.IsDeleted, Top: parameters.Top
+        ).Include(q => q.CreatedByUser);
 
         if (query == null) return Enumerable.Empty<ServiceClub>();
+
+        if (parameters.SortFields?.Any() == true)
+        {
+            query = query.ApplySortingFields(parameters.SortFields);
+        }
 
         return (await query.ToArrayAsync()).ToServiceClubs();
     }
@@ -76,12 +79,12 @@ internal class ClubRepository : DBRepositoryBase<Club, GFADbContext>, IClubRepos
 
                     await SaveChangesAsync();
 
-                    return EntityResult<ServiceClub>.Success(club.ToServiceClub());
+                    return EntityResult.Success(club.ToServiceClub());
                 }
 
                 logger.LogError($"Cloning model {updated} Failed", nameof(ClubRepository), nameof(CloneAsync));
 
-                return EntityResult<ServiceClub>.Failure(new[] { "Cloning model failed" });
+                return EntityResult.Failure<ServiceClub>(new[] { "Cloning model failed" });
             }
 
             throw new ArgumentNullException("Code does not exist");
@@ -90,7 +93,7 @@ internal class ClubRepository : DBRepositoryBase<Club, GFADbContext>, IClubRepos
         {
             logger.LogError(ex.Message, nameof(ClubRepository), nameof(CloneAsync));
 
-            return EntityResult<ServiceClub>.Failure(new[] { ex.Message });
+            return EntityResult.Failure<ServiceClub>(new[] { ex.Message });
         }
     }
 
@@ -130,7 +133,7 @@ internal class ClubRepository : DBRepositoryBase<Club, GFADbContext>, IClubRepos
 
                 await SaveChangesAsync();
 
-                return EnumerableEntityResult<ServiceClub>.Success(clubs.ToServiceClubs());
+                return EntityResult.Success(clubs.ToServiceClubs());
             }
 
             throw new ArgumentNullException("Ids Provided cannot be null");

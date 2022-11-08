@@ -1,33 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace GFA.Medicals.Data
+namespace GFA.Medicals.Data;
+
+internal class GFADbContext : IdentityDbContext<GFAIdentityUser>
 {
-    internal class GFADbContext : DbContext
+    public GFADbContext(DbContextOptions<GFADbContext> options) : base(options)
     {
-        public GFADbContext(DbContextOptions<GFADbContext> options) : base(options)
-        {
-        }
+    }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
         {
-            if (!optionsBuilder.IsConfigured)
+            var ayoConnection = Environment.GetEnvironmentVariable("ConnectionStringsGFAContext");
+            // var ayoConnection = "Server=.\\osl_233;Database=fms-local-dev;Trusted_Connection=True;MultipleActiveResultSets=true";
+
+            if (!string.IsNullOrEmpty(ayoConnection))
             {
-                var ayoConnection = Environment.GetEnvironmentVariable("ConnectionStringsGFAContext");
-                // var ayoConnection = "Server=.\\osl_233;Database=fms-local-dev;Trusted_Connection=True;MultipleActiveResultSets=true";
-
-                if (!string.IsNullOrEmpty(ayoConnection))
-                {
-                    optionsBuilder.UseNpgsql(ayoConnection);
-                }
+                optionsBuilder.UseNpgsql(ayoConnection);
             }
         }
-
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);            
-        }
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);            
+    }
+}
+
+internal class GFAIdentityUser : IdentityUser<GFAUser>
+{
 }

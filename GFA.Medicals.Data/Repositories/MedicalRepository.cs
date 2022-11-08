@@ -11,8 +11,6 @@ internal class MedicalRepository : DBRepositoryBase<Medical, GFADbContext>, IMed
 
     public async Task<EntityResult<ServiceMedical>> AddUpdateEntity(DataMedicalUpdate entity)
     {
-        ArgumentNullException.ThrowIfNull(entity, nameof(DataMedicalUpdate));
-
         try
         {
             Medical? updated = null;
@@ -26,13 +24,13 @@ internal class MedicalRepository : DBRepositoryBase<Medical, GFADbContext>, IMed
 
             await SaveChangesAsync();
 
-            return EntityResult<ServiceMedical>.Success(updated.ToServiceMedical());
+            return EntityResult.Success(updated.ToServiceMedical());
         }
         catch (Exception ex)
         {
             logger.LogError(ex.Message, nameof(AddUpdateEntity), nameof(MedicalRepository));
 
-            return EntityResult<ServiceMedical>.Failure(new[] { ex.Message });
+            return EntityResult.Failure<ServiceMedical>(new[] { ex.Message });
         }
     }
 
@@ -44,24 +42,22 @@ internal class MedicalRepository : DBRepositoryBase<Medical, GFADbContext>, IMed
         {
             query = FindByCondition(q => parameters.Ids.Contains(q.Id)).Include(q => q.CreatedByUser);
         }
-        else
-        {
-            query = FindByCondition(q =>
-                (string.IsNullOrWhiteSpace(parameters.SearchText) || string.IsNullOrWhiteSpace(q.Keywords) || EF.Functions.FreeText(q.Keywords, parameters.ToFreeText()!)) &&
-                
-                (string.IsNullOrWhiteSpace(parameters.InjuryPeriod) || parameters.InjuryYear == null || (
-                    (parameters.InjuryYear == null && q.PeriodType == parameters.InjuryPeriod) ||
-                    (string.IsNullOrWhiteSpace(parameters.InjuryPeriod) && q.PeriodYear == parameters.InjuryYear) ||
-                    (q.PeriodType == parameters.InjuryPeriod && q.PeriodYear == parameters.InjuryYear)
-                )) &&
-                (parameters.ClubId == null || q.PlayerClub.ClubId == parameters.ClubId) &&
-                (parameters.PlayerId == null || q.PlayerClub.PlayerId == parameters.PlayerId) &&
-                (parameters.IsRecovered == null || parameters.IsRecovered == q.DateRecovered.HasValue) &&
-                (parameters.InjuryStatus == null || q.InjuryStatus == parameters.InjuryStatus) &&
-                (parameters.InjuryType == null || q.InjuryType == parameters.InjuryType) &&
-                q.IsDeleted == parameters.IsDeleted, Top: parameters.Top
-            ).Include(q => q.CreatedByUser);
-        }
+
+        query ??= FindByCondition(q =>
+            (string.IsNullOrWhiteSpace(parameters.SearchText) || string.IsNullOrWhiteSpace(q.Keywords) || EF.Functions.FreeText(q.Keywords, parameters.ToFreeText()!)) &&
+
+            (string.IsNullOrWhiteSpace(parameters.InjuryPeriod) || parameters.InjuryYear == null || (
+                (parameters.InjuryYear == null && q.PeriodType == parameters.InjuryPeriod) ||
+                (string.IsNullOrWhiteSpace(parameters.InjuryPeriod) && q.PeriodYear == parameters.InjuryYear) ||
+                (q.PeriodType == parameters.InjuryPeriod && q.PeriodYear == parameters.InjuryYear)
+            )) &&
+            (parameters.ClubId == null || q.PlayerClub.ClubId == parameters.ClubId) &&
+            (parameters.PlayerId == null || q.PlayerClub.PlayerId == parameters.PlayerId) &&
+            (parameters.IsRecovered == null || parameters.IsRecovered == q.DateRecovered.HasValue) &&
+            (parameters.InjuryStatus == null || q.InjuryStatus == parameters.InjuryStatus) &&
+            (parameters.InjuryType == null || q.InjuryType == parameters.InjuryType) &&
+            q.IsDeleted == parameters.IsDeleted, Top: parameters.Top
+        ).Include(q => q.CreatedByUser);        
 
         query = query.Include(q => q.PlayerClub).ThenInclude(q => q.Club);
 
@@ -69,6 +65,11 @@ internal class MedicalRepository : DBRepositoryBase<Medical, GFADbContext>, IMed
         if (parameters.ShowPlayer ?? false) query = inc.ThenInclude(q => q.Player);
 
         if (query == null) return Enumerable.Empty<ServiceMedical>();
+
+        if (parameters.SortFields?.Any() == true)
+        {
+            query = query.ApplySortingFields(parameters.SortFields);
+        }
 
         return (await query.ToArrayAsync()).ToServiceMedicals();
     }
@@ -90,12 +91,12 @@ internal class MedicalRepository : DBRepositoryBase<Medical, GFADbContext>, IMed
 
                     await SaveChangesAsync();
 
-                    return EntityResult<ServiceMedical>.Success(medical.ToServiceMedical());
+                    return EntityResult.Success(medical.ToServiceMedical());
                 }
 
                 logger.LogError($"Cloning model {updated} Failed", nameof(MedicalRepository), nameof(CloneAsync));
 
-                return EntityResult<ServiceMedical>.Failure(new[] { "Cloning model failed" });
+                return EntityResult.Failure<ServiceMedical>(new[] { "Cloning model failed" });
             }
 
             throw new ArgumentNullException("Medical History does not exist");
@@ -104,7 +105,7 @@ internal class MedicalRepository : DBRepositoryBase<Medical, GFADbContext>, IMed
         {
             logger.LogError(ex.Message, nameof(MedicalRepository), nameof(CloneAsync));
 
-            return EntityResult<ServiceMedical>.Failure(new[] { ex.Message });
+            return EntityResult.Failure<ServiceMedical>(new[] { ex.Message });
         }
     }
 
@@ -144,7 +145,7 @@ internal class MedicalRepository : DBRepositoryBase<Medical, GFADbContext>, IMed
 
                 await SaveChangesAsync();
 
-                return EnumerableEntityResult<ServiceMedical>.Success(medicals.ToServiceMedicals());
+                return EntityResult.Success(medicals.ToServiceMedicals());
             }
 
             throw new ArgumentNullException("Ids Provided cannot be null");

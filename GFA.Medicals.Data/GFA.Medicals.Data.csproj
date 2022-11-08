@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Ayo4u.Server.Shared\Server.Shared.csproj" />
     <ProjectReference Include="..\GFA.Medicals.Infrastructure\GFA.Medicals.Infrastructure.csproj" />
   </ItemGroup>

@@ -1,13 +1,22 @@
-﻿using Server.Shared.Models;
+﻿namespace GFA.Medicals.Data.Models;
 
-namespace GFA.Medicals.Data.Models
+internal class GFAUser : GFAIdModel<Guid, GFAUser>, IUserProfile<Guid>, IEquatable<GFAUser>
 {
-    internal class GFAUser : GFAIdModel<Guid, GFAUser>, IUserProfile<Guid>
+    public string Email { get; set; } = default!;
+
+    public string FirstName { get; set; } = default!;
+
+    public string LastName { get; set; } = default!;
+
+    public bool Equals(GFAUser? other)
     {
-        public string Email { get; set; } = default!;
+        if (other != null)
+        {
+            if (ReferenceEquals(this, other)) return true;
 
-        public string FirstName { get; set; } = default!;
+            return (Id == other?.Id) || string.Equals(Email, other!.Email);
+        }
 
-        public string LastName { get; set; } = default!;
+        return false;
     }
 }

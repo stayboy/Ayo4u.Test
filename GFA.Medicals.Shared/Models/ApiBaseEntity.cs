@@ -1,9 +1,7 @@
 ﻿namespace GFA.Medicals.Web.Shared.Models;
 
-public abstract class ApiBaseEntity<T>
+public abstract class ApiBaseEntity
 {
-    public T Id { get; set; } = default!;
-
     public DateTime Created { get; set; }
 
     public bool IsDeleted { get; set; } = false;
@@ -11,4 +9,9 @@ public abstract class ApiBaseEntity<T>
     public string? CreatedByUserFullName { get; set; }
 
     public string? CreatedByUserEmail { get; set; }
+}
+
+public abstract class ApiBaseEntity<T> : ApiBaseEntity
+{
+    public T Id { get; set; } = default!;
 }
